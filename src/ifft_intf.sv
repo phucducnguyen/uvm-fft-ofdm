@@ -1,7 +1,7 @@
 //
 // This is the DUT interface
 //
-interface ifft_intf(input Clk, input Reset);
+interface intf(input Clk, input Reset);
 reg Pushin;
 reg FirstData;
 reg signed [16:0] DinR;
@@ -14,4 +14,4 @@ modport ofdmdec(input Clk, input Reset,
                input DinR, input DinI,
                output PushOut, output DataOut);
 
-endinterface : ifft_intf
+endinterface : intf
