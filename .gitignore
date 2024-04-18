@@ -1,4 +1,8 @@
 README.md
 fftw.sv
-csrc
+csrc/
+simv.daidir/*
 simv.daidir
+simv
+vc_hdrs.h
+ucli.key

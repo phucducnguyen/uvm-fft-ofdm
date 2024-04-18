@@ -65,7 +65,7 @@ def condata(q):
 
 def dumpt(wa,fn,nm):
     with open(fn,"w") as fo:
-        fo.write(f"// output is real, imag\n");
+        fo.write(f"// output is real, imag\n")
         fo.write(f"// real is rv[{2*nbits-1}:{nbits}]\n")
         fo.write(f"// imag is rv[{nbits-1}:0]\n")
         fo.write(f"function reg [{nbits*2-1}:0] {nm}(reg [5:0] ix);\n")
