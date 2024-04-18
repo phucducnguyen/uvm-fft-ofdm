@@ -1,0 +1,28 @@
+class ifft_agent extends uvm_agent;
+        `uvm_component_utils(ifft_agent)
+
+        function new (string name, uvm_component parent=null);
+                super.new(name, parent);
+        endfunction
+
+        // create analysis port
+        uvm_analysis_port #(seq_item) ifft_agent_port;
+        //Instantiate driver, sequencer, monitor
+        my_driver drv;
+        my_sequencer sqr;
+        my_monitor mon;
+//      uvm_sequencer #(my_sequence_item) sqr0; //default sequencer
+
+        function void build_phase (uvm_phase phase);
+                drv = my_driver::type_id::create("DRIVER",this);
+                sqr = my_sequencer::type_id::create("SEQUENCER",this);
+                mon = my_monitor::type_id::create("MONITOR",this);
+                ifft_agent_port = new("ifft_agent_port",this);
+                //sqr0 = uvm_sequencer#(my_sequence_item)::type_id::create("sqr0",this); //default sequencer
+        endfunction
+
+        function void connect_phase(uvm_phase phase); //connect driver to sequencer
+                drv.seq_item_port.connect(sqr.seq_item_export);
+        endfunction
+
+endclass : my_agent

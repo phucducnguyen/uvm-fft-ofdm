@@ -4,10 +4,11 @@
 
 package IFFT;
     import uvm_pkg::*;
-    `include "src/seq_item.sv" 
-    `include "src/seq.sv"
-    `include "src/drv.sv"
-    `include "src/env.sv"
+    `include "src/sequence_item.sv" 
+    `include "src/sequences.sv"
+    `include "src/sequencer.sv"
+    `include "src/driver.sv"
+    `include "src/environment.sv"
     `include "src/test.sv"
 endpackage : IFFT
 

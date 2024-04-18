@@ -1,7 +1,7 @@
 //
 // This is the DUT interface
 //
-interface intf(input Clk, input Reset);
+interface interface(input Clk, input Reset);
 reg Pushin;
 reg FirstData;
 reg signed [16:0] DinR;
