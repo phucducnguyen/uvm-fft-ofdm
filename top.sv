@@ -8,6 +8,7 @@ package IFFT;
     `include "src/sequences.sv"
     `include "src/sequencer.sv"
     `include "src/driver.sv"
+    `include "src/ifft/ifft_agent.sv"
     `include "src/environment.sv"
     `include "src/test.sv"
 endpackage : IFFT
