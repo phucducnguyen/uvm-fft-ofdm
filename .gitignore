@@ -2,5 +2,5 @@ README.md
 fftw.sv
 csrc/
 simv*
-vc_hdrs.h
-ucli.key
+vc_hdrs*
+ucli*
