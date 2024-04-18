@@ -1,8 +1,6 @@
 README.md
 fftw.sv
 csrc/
-simv.daidir/*
-simv.daidir
-simv
+simv*
 vc_hdrs.h
 ucli.key
