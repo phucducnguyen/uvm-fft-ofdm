@@ -1,6 +1,6 @@
 `timescale 1ns/10ps
 `include "src/interface.sv"
-//`include "dut.svp"
+`include "dut.svp"
 package IFFT;
     import uvm_pkg::*;
     `include "src/sequence_item.sv" 
