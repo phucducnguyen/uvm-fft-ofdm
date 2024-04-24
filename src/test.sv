@@ -26,7 +26,7 @@ class test extends uvm_test;
 
     function void connect_phase(uvm_phase phase);
         drv.seq_item_port.connect(seqr.seq_item_export);
-        drv.drv_to_sb_analysis_port.connect(sb.in_port);
+        // drv.driver_to_encode.connect(sb.in_port);
     endfunction : connect_phase
 
     task run_phase(uvm_phase phase);
