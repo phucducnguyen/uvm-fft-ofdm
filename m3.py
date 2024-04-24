@@ -199,6 +199,7 @@ def tcase(sdata):
 # perform the IFFT. (Both my code, and library code)
 #iff=fft.ifft(d) # library ifft used for debug
     mjiff=mjifft(d)
+    print("this is d:",mjiff)
 #debdata(mjiff,"iff.deb","ifft")
 
 #plt.plot([x.real for x in iff],"b")

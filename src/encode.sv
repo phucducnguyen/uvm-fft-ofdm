@@ -11,6 +11,8 @@ class encode extends uvm_scoreboard;
     // uvm_analysis_port #(sequence_item) enc_to_ifft;
 
     sequence_item transactions[$];
+    extern function reg encbits_func(input int in48);
+    int a = 48;
 
     function new(string name="encode",uvm_component parent=null); //create constructor
         super.new(name,parent);
@@ -57,10 +59,10 @@ class encode extends uvm_scoreboard;
     //     res[55]=1.0
     //     res[128-55]=1.0
     //     return res
+    bit signed [127:0] out128;
     task encode_freq(sequence_item curr_trans);
         $display("*********Encode/Task Encode_freq - sequence_item value: %10h ",curr_trans.rand_48_bits);
-        shortreal a;
-        $display("*********Encode/Task Encode_freq -FLOAT: %f ",a);
+        out128 = encbits_func(a);
         // real amp[4] = '{0.0, 0.333, 0.666, 1.0};
         // complex_data res[SIZE];
         // parameter integer fbin = FRACTIONAL_BITS;
