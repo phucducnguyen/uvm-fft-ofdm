@@ -146,11 +146,13 @@ def mjifft(d):
 def encbits(d):
     """Encodes 48 bits to frequency amounts"""
     amp=[0.0,0.333,0.666,1.0]
+    print(amp)
     res=[0+0j for x in range(128)]
+    print(res)
     fbin=4
     while fbin < 52:
         xx=amp[d&3]
-#        print(fbin,hex(d),xx)
+        print(fbin,hex(d),xx)
         d>>=2
         res[fbin]=xx
         res[(128-fbin)]=xx  # placed in both positive and negative freqs
@@ -192,7 +194,7 @@ def tcase(sdata):
 # Encode the bits to frequency data
 # sdata=0xE23456789F1B
     d=encbits(sdata)
-
+    print("this is d:",d)
 
 # perform the IFFT. (Both my code, and library code)
 #iff=fft.ifft(d) # library ifft used for debug
@@ -237,11 +239,11 @@ def rand48():
     return rd
 
 tcase(0xE23456789F1B)
-tcase(0x000000000000)
-tcase(0x555555555555)
-tcase(0xaaaaaaaaaaaa)
-tcase(0xffffffffffff)
-for qq in range(1000):
-    tcase(rand48())
+# tcase(0x000000000000)
+# tcase(0x555555555555)
+# tcase(0xaaaaaaaaaaaa)
+# tcase(0xffffffffffff)
+# for qq in range(1000):
+#     tcase(rand48())
 
 

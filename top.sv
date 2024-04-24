@@ -3,12 +3,14 @@
 `include "dut.svp"
 package IFFT;
     import uvm_pkg::*;
+    `include "src/complex_type.sv" 
     `include "src/sequence_item.sv" 
     `include "src/sequences.sv"
     `include "src/sequencer.sv"
     `include "src/driver.sv"
-    // `include "src/ifft_agent.sv"
     `include "src/encode.sv"
+    `include "src/ifft.sv"
+    `include "src/ifft_agent.sv"
     `include "src/environment.sv"
     `include "src/test.sv"
 endpackage : IFFT

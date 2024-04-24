@@ -4,77 +4,81 @@
 
 class encode extends uvm_scoreboard;
     `uvm_component_utils(encode) // uvm_macro
-    `uvm_analysis_imp_decl (_in)
-    `uvm_analysis_imp_decl (_out)
-    // `uvm_analysis_imp_decl (_ref)
 
-    uvm_analysis_imp_in #(sequence_item, encode) in_port;
-    uvm_analysis_imp_out #(sequence_item, encode) out_port;
+    // Ports //
+    uvm_analysis_port #(sequence_item) encode_to_ifft_port;
+    uvm_analysis_imp #(sequence_item, encode) enc_imp;
+    // uvm_analysis_port #(sequence_item) enc_to_ifft;
 
-    sequence_item seq_itm;
-    sequence_item seq_itm_in;
-    sequence_item seq_itm_out;
-
-    sequence_item queue_in [$];
-    sequence_item queue_out [$];
-
-    virtual dut_interface intf;
-    bit [7:0] error_flag;  
+    sequence_item transactions[$];
 
     function new(string name="encode",uvm_component parent=null); //create constructor
         super.new(name,parent);
-        in_port =  new("in_port building",this);
-        out_port =  new("out_port building",this);
+        enc_imp = new("enc_imp", this);
+        encode_to_ifft_port = new("encode_to_ifft_port",this);
     endfunction : new
 
     function void build_phase(uvm_phase phase);     //build phase
         `uvm_info("ENCODE","BUILD PHASE",UVM_MEDIUM);
-        // seq_itm = sequence_item::type_id::create("seq_itm",this);
-        // seq_itm_in = sequence_item::type_id::create("seq_itm_in",this);
-        // seq_itm_out = sequence_item::type_id::create("seq_itm_out",this);
-        seq_itm = new();
-        seq_itm_in = new();
-        seq_itm_out = new();
-        
-        // error_flag = 8'd0;
-
-        // if (!uvm_config_db#(virtual dut_interface)::get(this, "*", "my_interface", intf))
-        // begin
-        //     `uvm_fatal("ENCODE", "Could not get virtual interface")
-        // end
     endfunction : build_phase
 
-    virtual function void write_in(sequence_item seq_itm);
-        queue_in.push_back(seq_itm);
-    endfunction: write_in
-
-    virtual function void write_out(sequence_item seq_itm);
-        // queue_out.push_back(seq_itm);
-    endfunction: write_out
-
-    task write(sequence_item seq_itm);
-        // queue_out.push_back(seq_itm);
-        out_port.write(seq_itm);
-    endtask: write
+    // take sequence item and put into a fifo
+    function void write(sequence_item item);
+	    transactions.push_back(item);
+	endfunction: write 
 
     task run_phase(uvm_phase phase); 
         `uvm_info("ENCODE","RUN PHASE", UVM_LOW);
-        // forever begin
-        //     seq_item_port.get_next_item(seq_itm);
-        //     $display("In Driver - sequence_item value: %08b ",seq_itm.rand_48_bits);
-        //     drive(seq_itm);
-        //     #10;
-        //     seq_item_port.item_done();
-        // end
         forever begin
-        // @(posedge intf.Clk)
-            wait(queue_in.size != 0 && queue_out.size != 0)
-            begin
-                seq_itm_in = queue_in.pop_front();
-                seq_itm_out = queue_out.pop_front();
-                $display("In Encode - seq_itm_in value: %08h ",seq_itm_in);
-                // $display("In Driver - sequence_item value: %08b ",seq_itm.rand_48_bits);
-            end
+            sequence_item curr_trans;
+            wait((transactions.size() != 0));
+            curr_trans = transactions.pop_front();
+            // need to assign value to encode_freq so it can send to ifft
+            encode_freq(curr_trans);
+            #10
+            drive_ifft(curr_trans);
         end
     endtask : run_phase
+
+    // where the encode happens
+    // change to frequency domain
+    // def encbits(d):
+    // """Encodes 48 bits to frequency amounts"""
+    //     amp=[0.0,0.333,0.666,1.0]
+    //     res=[0+0j for x in range(128)]
+    //     fbin=4
+    //     while fbin < 52:
+    //         xx=amp[d&3]
+    // #        print(fbin,hex(d),xx)
+    //         d>>=2
+    //         res[fbin]=xx
+    //         res[(128-fbin)]=xx  # placed in both positive and negative freqs
+    //         fbin+=2
+    //     res[55]=1.0
+    //     res[128-55]=1.0
+    //     return res
+    task encode_freq(sequence_item curr_trans);
+        $display("*********Encode/Task Encode_freq - sequence_item value: %10h ",curr_trans.rand_48_bits);
+        shortreal a;
+        $display("*********Encode/Task Encode_freq -FLOAT: %f ",a);
+        // real amp[4] = '{0.0, 0.333, 0.666, 1.0};
+        // complex_data res[SIZE];
+        // parameter integer fbin = FRACTIONAL_BITS;
+
+        // // Initialization block for res array
+        // initial begin
+        //     integer i;
+        //     for (i = 0; i < SIZE; i = i + 1) begin
+        //         res[i].real_part = 0.0;
+        //         res[i].imag_part = 0.0;
+        //     end
+        // end
+    endtask : encode_freq
+
+    // Send packet to ifft
+    task drive_ifft(sequence_item item);
+        $display("*********Encoder - send sequence_item to IFFT");
+        encode_to_ifft_port.write(item);
+    endtask : drive_ifft
+
 endclass : encode

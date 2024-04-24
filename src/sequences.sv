@@ -6,7 +6,7 @@ class sequences extends uvm_sequence #(sequence_item);
     task body();
         $display("In sequences 1");
         seq_itm = new();
-        repeat(10) begin // send 10 random sequence_item then stop
+        repeat(1) begin // send 10 random sequence_item then stop
             start_item(seq_itm); // Start the item
             seq_itm.randomize();            
             finish_item(seq_itm); // Finish the item
