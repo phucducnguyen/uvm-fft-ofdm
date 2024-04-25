@@ -1,4 +1,3 @@
-module ultil();
     typedef struct {
         reg signed [15:0] real_part;
         reg signed [15:0] imag_part;
@@ -107,6 +106,4 @@ module ultil();
     //         end
     //     endfunction
 
-    // endmodule
-
-endmodule : ultil
+    // endmoduless

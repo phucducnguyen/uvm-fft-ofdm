@@ -62,7 +62,7 @@ class encode extends uvm_scoreboard;
     bit signed [127:0] out128;
     task encode_freq(sequence_item curr_trans);
         $display("*********Encode/Task Encode_freq - sequence_item value: %10h ",curr_trans.rand_48_bits);
-        out128 = encbits_func(a);
+        // out128 = encbits_func(a);
         // real amp[4] = '{0.0, 0.333, 0.666, 1.0};
         // complex_data res[SIZE];
         // parameter integer fbin = FRACTIONAL_BITS;

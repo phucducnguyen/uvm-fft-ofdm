@@ -3,3 +3,6 @@
   CREATE_STREAM @0 {NAME:uvm_sequence T:Transactions SCOPE:uvm_test_top.SEQUENCER STREAM:664}
   CREATE_STREAM @0 {NAME:uvm_sequence T:Transactions SCOPE:uvm_test_top.SEQUENCER STREAM:664}
   CREATE_STREAM @0 {NAME:uvm_sequence T:Transactions SCOPE:uvm_test_top.SEQUENCER STREAM:664}
+  CREATE_STREAM @0 {NAME:uvm_sequence T:Transactions SCOPE:uvm_test_top.SEQUENCER STREAM:664}
+  CREATE_STREAM @0 {NAME:uvm_sequence T:Transactions SCOPE:uvm_test_top.SEQUENCER STREAM:664}
+  CREATE_STREAM @0 {NAME:uvm_sequence T:Transactions SCOPE:uvm_test_top.SEQUENCER STREAM:664}
