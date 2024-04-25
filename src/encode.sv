@@ -11,8 +11,8 @@ class encode extends uvm_scoreboard;
     // uvm_analysis_port #(sequence_item) enc_to_ifft;
 
     sequence_item transactions[$];
-    extern function reg encbits_func(input int in48);
-    int a = 48;
+    complex_t enc_packet;
+
 
     function new(string name="encode",uvm_component parent=null); //create constructor
         super.new(name,parent);
@@ -62,19 +62,9 @@ class encode extends uvm_scoreboard;
     bit signed [127:0] out128;
     task encode_freq(sequence_item curr_trans);
         $display("*********Encode/Task Encode_freq - sequence_item value: %10h ",curr_trans.rand_48_bits);
-        // out128 = encbits_func(a);
-        // real amp[4] = '{0.0, 0.333, 0.666, 1.0};
-        // complex_data res[SIZE];
-        // parameter integer fbin = FRACTIONAL_BITS;
-
-        // // Initialization block for res array
-        // initial begin
-        //     integer i;
-        //     for (i = 0; i < SIZE; i = i + 1) begin
-        //         res[i].real_part = 0.0;
-        //         res[i].imag_part = 0.0;
-        //     end
-        // end
+        enc_packet = enc(curr_trans.rand_48_bits);
+        display_complex(enc_packet);
+        // encbits_func(1'b1);
     endtask : encode_freq
 
     // Send packet to ifft
@@ -82,5 +72,22 @@ class encode extends uvm_scoreboard;
         $display("*********Encoder - send sequence_item to IFFT");
         encode_to_ifft_port.write(item);
     endtask : drive_ifft
+
+    function complex_t enc(reg[47:0] itm);
+        complex_t res[128];
+        shortreal amp[4] = '{0.0,0.333,0.666,1.0};
+        $display("%f , %f , %f , %f",amp[0],amp[1],amp[2],amp[3]);
+        initial begin
+            for (int i = 0; i < 128; i++) begin
+                res[i].real_part = 0.0;
+                res[i].imag_part = 0.0;
+            end
+        end
+        return res;
+    endfunction
+
+    function void display_complex(complex_t a);
+        $display("Real %f - Imagine %f", a.real_part, a.imag_part);
+	endfunction : display_complex
 
 endclass : encode
