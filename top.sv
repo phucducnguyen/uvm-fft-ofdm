@@ -3,14 +3,13 @@
 `include "dut.svp"
 package IFFT;
     import uvm_pkg::*;
+    `include "ifftw.sv"
     `include "src/util.sv"
     `include "src/sequence_item.sv" 
     `include "src/sequences.sv"
     `include "src/sequencer.sv"
     `include "src/driver.sv"
-    `include "src/encode.sv"
-    `include "src/ifft.sv"
-    `include "src/ifft_agent.sv"
+    `include "src/encode_ifft.sv"
     `include "src/environment.sv"
     `include "src/test.sv"
 endpackage : IFFT
@@ -45,8 +44,7 @@ module top();
         run_test("test");
     end
 
-    ofdmdec dut_inst(.Clk(dut_if.Clk), .Reset(dut_if.Reset),
-               .Pushin(dut_if.Pushin), .FirstData(dut_if.FirstData),
+    ofdmdec dut_inst(.Clk(clk), .Reset(rst), .Pushin(dut_if.Pushin), .FirstData(dut_if.FirstData),
                .DinR(dut_if.DinR), .DinI(dut_if.DinI),
                .PushOut(dut_if.PushOut), .DataOut(dut_if.DataOut));
 

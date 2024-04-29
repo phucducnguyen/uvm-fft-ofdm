@@ -1,7 +1,9 @@
 README.md
 fftw.sv
+ifftw.sv
 csrc/
 simv*
 vc_hdrs*
 ucli*
-tr*
+iff*
+tr_db.log

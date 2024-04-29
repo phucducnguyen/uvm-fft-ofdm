@@ -3,9 +3,10 @@
 class test extends uvm_test;
     `uvm_component_utils(test)
     
+    virtual dut_interface dut_if;
     sequencer seqr;
     driver drv;
-    ifft_agent ifft_ag;
+    encode_ifft enc;
     // seq_top ts;
 
     function new(string name = "test", uvm_component parrent = null);
@@ -15,9 +16,11 @@ class test extends uvm_test;
     function void build_phase(uvm_phase phase);
         // super.build_phase(phase);
         `uvm_info("TEST", "BUILD PHASE", UVM_MEDIUM)
+        if (!uvm_config_db #(virtual dut_interface)::get(null, "", "dut_interface" , dut_if))
+			`uvm_fatal("TEST", "Could not get vitual interface")
         seqr = sequencer::type_id::create("SEQUENCER",this);
         drv = driver::type_id::create("DRIVER",this);
-        ifft_ag = ifft_agent::type_id::create("ifft_ag",this);
+        enc = encode_ifft::type_id::create("ENCODE_IFFT",this);
     endfunction : build_phase
 
     // function void end_of_elaboration_phase(uvm_phase phase);
@@ -26,8 +29,8 @@ class test extends uvm_test;
 
     function void connect_phase(uvm_phase phase);
         drv.seq_item_port.connect(seqr.seq_item_export); // driver to squencer
-        drv.drv_to_enc_port.connect(ifft_ag.ifft_agent_export); // driver port to ifft agent export
-        ifft_ag.ifft_agent_port.connect(drv.drv_imp); // ifft agent port to driver imp
+        drv.drv_to_enc_port.connect(enc.enc_imp); // driver port to ifft agent export
+        enc.encode_ifft_port.connect(drv.drv_imp); // ifft agent port to driver imp
     endfunction : connect_phase
 
     task run_phase(uvm_phase phase);

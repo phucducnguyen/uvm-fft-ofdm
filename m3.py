@@ -34,23 +34,29 @@ def asq(n):
 def br(d):
     """Make a bit reversed copy of the input vector.
 Used by both the FFT and IFFT (DIT type code)"""
-    rv=[0+0j for x in d]
-    for ix in range(len(d)):
-        wx=ix
-        rx=0
-        for qq in range(7):
-            rx= rx*2
+    rv=[0+0j for x in d]        # rv same length as d with 0 in complex
+    for ix in range(len(d)):    # iterate over ix in range from 0 to len d
+        wx=ix                   # wx = ix
+        rx=0                    # rx = 0
+        for qq in range(7):     # iterate over qq in range from 0 to 7
+            rx= rx*2            
             if wx&1 !=0:
                 rx=rx | 1
             wx=wx>>1
-#        print(ix,rx)
+        # print(ix,rx)
         rv[ix]=d[rx]
+        # print("******************INSIDE BIT REVERSE - rx: {}", rx)
+        # print("******************INSIDE BIT REVERSE - ix: {}", ix)
+        # print("******************INSIDE BIT REVERSE - in[rx]: {}", d[rx])
+        # print("******************INSIDE BIT REVERSE - out[ix]: {}", rv[ix])
     return rv
 
 tw=fftwiddle(128)
 twi=ifftwiddle(128)
+# print(twi)
 
 def condata(q):
+    # condata in Interger
     qr=int(q.real*sf)
     if qr < 0:
         qrs= f"-{nbits}'d{-qr}"
@@ -62,6 +68,19 @@ def condata(q):
     else:
         qis= f"{nbits}'d{qi}"
     return f"{{{qrs}, {qis}}}"
+
+    # ## condata in floating point
+    # qr=q.real
+    # # if qr < 0:
+    # #     qrs= f"-{nbits}'d{-qr}"
+    # # else:
+    # #     qrs= f"{nbits}'d{qr}"
+    # qi=q.imag
+    # # if qi < 0:
+    # #     qis= f"-{nbits}'d{-qi}"
+    # # else:
+    # #     qis= f"{nbits}'d{qi}"
+    return f"{{{qr}, {qi}}}"
 
 def dumpt(wa,fn,nm):
     with open(fn,"w") as fo:
@@ -76,9 +95,22 @@ def dumpt(wa,fn,nm):
         fo.write("  endcase\n")
         fo.write("  return rv;\n")
         fo.write(f"endfunction : {nm}\n")
+    
+    # with open(fn,"w") as fo:
+    #     fo.write(f"// output is real, imag\n")
+    #     fo.write(f"// real is rv[{2*nbits-1}:{nbits}]\n")
+    #     fo.write(f"// imag is rv[{nbits-1}:0]\n")
+    #     fo.write(f"function reg [{nbits*2-1}:0] {nm}(reg [5:0] ix);\n")
+    #     fo.write(f"  reg [{nbits*2-1}:0] rv;\n")
+    #     fo.write("  case(ix)\n")
+    #     for ix in range(len(wa)):
+    #         fo.write(f"    {ix} : rv={condata(wa[ix])};\n")
+    #     fo.write("  endcase\n")
+    #     fo.write("  return rv;\n")
+    #     fo.write(f"endfunction : {nm}\n")
 
-dumpt(tw,"fftw.sv","fftwiddle")
-#dumpt(twi,"ifftw.sv","ifftwiddle")
+# dumpt(tw,"fftw.sv","fftwiddle")
+dumpt(twi,"ifftw.sv","ifftwiddle")
 
 def mhx(fd):
     iv=int(fd*sf)
@@ -100,7 +132,7 @@ def mjfft(d):
     spread=2
     for lvl in range(7):
         bs=0
-#        debdata(wk,f"fft{lvl}.deb",f"fft level {lvl}")
+        # debdata(wk,f"fft{lvl}.deb",f"fft level {lvl}")
         while(bs<128):
             for ix in range(bs,bs+spread//2):
                 twix=(ix%spread)*(128//spread)
@@ -120,39 +152,61 @@ def mjfft(d):
 def mjifft(d):
     """IFFT used by the test bench"""
     global twi
+    # print(d)
     wk=br(d)
+    # print(wk)
     spread=2
     for lvl in range(7):
         bs=0
 #        debdata(wk,f"ifft{lvl}.deb",f"IFFT lvl {lvl}")
         while(bs<128):
+            # print("bs: {}", bs)
+            # print("spread: {}", spread)
+            # print("bs+spread//2: {}", bs+spread//2)
             for ix in range(bs,bs+spread//2):
                 twix=(ix%spread)*(128//spread)
                 i1=ix
                 i2=ix+spread//2
+                # print(f"twix : {twix}, i1 : {i1}, i2 : {i2}".format(twix, i1, i2))
                 t=twi[twix] # uses the IFFT twiddles (Test bench only)
+                # print(t)
                 v=wk[i2]*t
+                # print(v)
+                print(wk[i1])
                 a=wk[i1]+v
+                # print("a: {}", a)
                 b=wk[i1]-v
+                # print("b: {}", b)
                 wk[i1]=a
                 wk[i2]=b
+                # print("v : {}, a : {}, b : {}, wk[i1] : {}, wk[i2] : {}".format(v, a, b, wk[i1],wk[i2]))
+                # print("twix: {}", twix)
+                # print("i1: {}", i1)
+                # print("i2: {}", i2)
+                # print("t: {}", t)
+                # print("v: {}", v)
+                # print("a: {}", a)
+                # print("b: {}", b)
+                # print("wk[i1]: {}", a)
+                # print("wk[i2]: {}", b)
             bs+=spread
         spread*=2
     vi=[x/128 for x in wk]      # IFFT is scaled by the block size
+    # print(vi)
     vi=[x.real+0j for x in vi] # real goes to real only (imag around 10^-16)
+    # print(vi)
     return vi
 
 
 def encbits(d):
     """Encodes 48 bits to frequency amounts"""
     amp=[0.0,0.333,0.666,1.0]
-    print(amp)
     res=[0+0j for x in range(128)]
-    print(res)
     fbin=4
     while fbin < 52:
         xx=amp[d&3]
-        print(fbin,hex(d),xx)
+        # print(xx)
+        # print(fbin,hex(d),xx)
         d>>=2
         res[fbin]=xx
         res[(128-fbin)]=xx  # placed in both positive and negative freqs
@@ -194,12 +248,12 @@ def tcase(sdata):
 # Encode the bits to frequency data
 # sdata=0xE23456789F1B
     d=encbits(sdata)
-    print("this is d:",d)
+    # print("this is d:",d)
 
 # perform the IFFT. (Both my code, and library code)
 #iff=fft.ifft(d) # library ifft used for debug
     mjiff=mjifft(d)
-    print("this is d:",mjiff)
+    # print("this is d:",mjiff)
 #debdata(mjiff,"iff.deb","ifft")
 
 #plt.plot([x.real for x in iff],"b")
@@ -208,6 +262,7 @@ def tcase(sdata):
 
 #change array to a list (If from system library)
     liff=list(mjiff)
+    # print(liff)
 
 #sampling point (Not on an exact boundry of the FFT/IFFT)
 #in a actual system, extra points are transmitted, and the
@@ -216,14 +271,18 @@ def tcase(sdata):
     mistime=0
 #duplicate the IFFT data to represent the pre and post samples
     ffd=(liff+liff+liff)[mistime:mistime+128] # select the points
+    # print(ffd)
     ffd=liff
+    # print(ffd)
     swffd=ffd
+    # print(swffd)
     cswffd=[x for x in swffd] # copy the data in case changed
 #debdata(cswffd,"windata.deb","ifft data to dut")
 #Stuff below is done by the design, above is done by the test bench
 
 #back=fft.fft(swffd) # library fft (Used for debug)
     myback=mjfft(cswffd) # local algorithm fft
+    # print(myback)
     rdata=bdecode(myback) # turn frequency data to 48 bits
 #plt.plot([ asq(myback[x]) for x in range(64) ],"r")
 #plt.show()
@@ -247,4 +306,14 @@ tcase(0xE23456789F1B)
 # for qq in range(1000):
 #     tcase(rand48())
 
+# d=encbits(0xE23456789F1B)
+# d = d[0:63:1]
+# print(d)
+# a = br(d)
+# print(a)
+# mjiff=mjifft(d)
+# print("this is mjifft:",mjiff)
+# debdata(mjiff,"iff.txt","ifft") # ifft output in floating point - file iff.txt
 
+# for i in range(64):
+#     print(twi[i])
