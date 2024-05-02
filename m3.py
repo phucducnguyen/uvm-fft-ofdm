@@ -69,18 +69,18 @@ def condata(q):
         qis= f"{nbits}'d{qi}"
     return f"{{{qrs}, {qis}}}"
 
-    # ## condata in floating point
+    # # ## condata in floating point
     # qr=q.real
-    # # if qr < 0:
-    # #     qrs= f"-{nbits}'d{-qr}"
-    # # else:
-    # #     qrs= f"{nbits}'d{qr}"
+    # # # if qr < 0:
+    # # #     qrs= f"-{nbits}'d{-qr}"
+    # # # else:
+    # # #     qrs= f"{nbits}'d{qr}"
     # qi=q.imag
-    # # if qi < 0:
-    # #     qis= f"-{nbits}'d{-qi}"
-    # # else:
-    # #     qis= f"{nbits}'d{qi}"
-    return f"{{{qr}, {qi}}}"
+    # # # if qi < 0:
+    # # #     qis= f"-{nbits}'d{-qi}"
+    # # # else:
+    # # #     qis= f"{nbits}'d{qi}"
+    # return f"{{{qr}, {qi}}}"
 
 def dumpt(wa,fn,nm):
     with open(fn,"w") as fo:
@@ -95,22 +95,9 @@ def dumpt(wa,fn,nm):
         fo.write("  endcase\n")
         fo.write("  return rv;\n")
         fo.write(f"endfunction : {nm}\n")
-    
-    # with open(fn,"w") as fo:
-    #     fo.write(f"// output is real, imag\n")
-    #     fo.write(f"// real is rv[{2*nbits-1}:{nbits}]\n")
-    #     fo.write(f"// imag is rv[{nbits-1}:0]\n")
-    #     fo.write(f"function reg [{nbits*2-1}:0] {nm}(reg [5:0] ix);\n")
-    #     fo.write(f"  reg [{nbits*2-1}:0] rv;\n")
-    #     fo.write("  case(ix)\n")
-    #     for ix in range(len(wa)):
-    #         fo.write(f"    {ix} : rv={condata(wa[ix])};\n")
-    #     fo.write("  endcase\n")
-    #     fo.write("  return rv;\n")
-    #     fo.write(f"endfunction : {nm}\n")
 
 # dumpt(tw,"fftw.sv","fftwiddle")
-dumpt(twi,"ifftw.sv","ifftwiddle")
+# dumpt(twi,"ifftw.sv","ifftwiddle")
 
 def mhx(fd):
     iv=int(fd*sf)
@@ -172,23 +159,13 @@ def mjifft(d):
                 # print(t)
                 v=wk[i2]*t
                 # print(v)
-                print(wk[i1])
+                # print(wk[i1])
                 a=wk[i1]+v
                 # print("a: {}", a)
                 b=wk[i1]-v
                 # print("b: {}", b)
                 wk[i1]=a
                 wk[i2]=b
-                # print("v : {}, a : {}, b : {}, wk[i1] : {}, wk[i2] : {}".format(v, a, b, wk[i1],wk[i2]))
-                # print("twix: {}", twix)
-                # print("i1: {}", i1)
-                # print("i2: {}", i2)
-                # print("t: {}", t)
-                # print("v: {}", v)
-                # print("a: {}", a)
-                # print("b: {}", b)
-                # print("wk[i1]: {}", a)
-                # print("wk[i2]: {}", b)
             bs+=spread
         spread*=2
     vi=[x/128 for x in wk]      # IFFT is scaled by the block size
@@ -220,11 +197,13 @@ def bdecode(spectrum):
 Uses Freq bin 55 or 57 (Which ever is larger) as the full scale guide tone
 Uses the square of values to avoid the square root"""
     tpoints=[0.0,0.333,0.666,1.0]
-    full_scale=max(asq(spectrum[55]),asq(spectrum[57]))
+    full_scale=max(asq(spectrum[55]),asq(spectrum[57])) #full scale is 1
     fspoints=[x*full_scale for x in tpoints]  # full scale spectrum
+    # print(fspoints)
     decision_points=[ asq(0.166666*full_scale),
                       asq( (0.166666+0.333333)*full_scale ),
                       asq( (0.166666+0.666666)*full_scale )]
+    # print(decision_points)
 #    plt.plot([abs(x) for x in spectrum])
 #    plt.show()
 #    print("fullscale ",full_scale,hex(int(full_scale*sf)))
@@ -240,7 +219,10 @@ Uses the square of values to avoid the square root"""
                 break
 #        print(x,hex(int(fsq*sf)),bv)
         bv=bv<<(x-4)
+        # print(bv)
         res=res|bv
+    # print(res)
+    # print(type(res))
     return res
 
 
@@ -254,7 +236,7 @@ def tcase(sdata):
 #iff=fft.ifft(d) # library ifft used for debug
     mjiff=mjifft(d)
     # print("this is d:",mjiff)
-#debdata(mjiff,"iff.deb","ifft")
+    # debdata(mjiff,"iff.txt","ifft")
 
 #plt.plot([x.real for x in iff],"b")
 #plt.plot([x.real for x in mjiff],"r")
