@@ -54,8 +54,8 @@ The module converts the transmitted complex waveform into a set of frequency bin
 To clone and run this project, execute the following commands:
 
 ```bash
-git clone https://github.com/yourusername/fft-ofdm.git
-cd fft-ofdm
+git clone https://github.com/phucducnguyen/uvm-fft-ofdm.git
+cd uvm-fft-ofdm
 ```
 
 Thank you for your interest in the FFT and Slicing Block project for OFDM communication systems!
