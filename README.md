@@ -26,23 +26,25 @@ Each used frequency bin represents 2 bits of output. This is represented by 4 sl
 data is encoded at 0%, 33%, 66%, and 100% of full scale. Full scale can be found in the magnitude of
 frequency bin 55 or 57 being 100%. The energy levels are coded/decoded as follows:
 
-Value Coded Condition
-00 0% <25% full scale
-01 33% >=25% and <50%
-10 66% >=50% and <75%
-11 100% >=75% full scale
+| Value | Coded | Condition |
+| ----- | ----- | --------- |
+| 00 | 0% | <25% full scale |
+| 01 | 33% | >=25% and <50% |
+| 10 | 66% | >=50% and <75% |
+| 11 | 100% | >=75% full scale |
 
 The output is in bytes. Each FFT block and slicing (finding the bits for a frequency) results in 48 bits.
 The low order two bits are in bin 4, and the upper bits are in bin 52 (24 bins total)
 
 The module has the following ports:
 
-Name Dir Bits Comment
-Clk In 1 Positive edge system clock
-Reset In 1 Active high asynchronous reset
-PushIn In 1 Data is present on the input
-FirstData In 1 This is the first data in an FFT block
-DinR In 16 Real part of input (coded 1.15 2’s complement)
-DinI In 16 Imaginary part of input (coded 1.15 2’s complement)
-PushOut Out 1 Data is present on the output
-DataOut Out 48 Output data bits
+| Name | Dir | Bits | Comment |
+| ---- | --- | ---- | ------- |
+| Clk | In | 1 | Positive edge system clock |
+| Reset | In | 1 | Active high asynchronous reset |
+| PushIn | In | 1 | Data is present on the input |
+| FirstData | In | 1 | This is the first data in an FFT block |
+| DinR | In | 16 | Real part of input (coded 1.15 2’s complement) |
+| DinI | In | 16 | Imaginary part of input (coded 1.15 2’s complement) |
+| PushOut | Out | 1 | Data is present on the output |
+| DataOut | Out | 48 | Output data bits |
