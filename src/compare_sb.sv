@@ -25,22 +25,15 @@ class compare_sb extends uvm_scoreboard;
     endfunction : build_phase
 
     task run_phase(uvm_phase phase);
-        // super.run_phase(phase);        
-        // phase.raise_objection(this);
         forever begin
             from_REF.get(value_REF);
             // $display("This is value from REF: %h",value_REF);
             from_DUT.get(value_DUT);
             // $display("This is value from DUT: %h",value_DUT);
             if(value_REF != value_DUT) begin
-                `uvm_error("COMPARE_ERrOR", $sformatf("Ref value %h != %h DUT value",  value_REF, value_DUT));
-            end 
-            // else begin
-            //     `uvm_info("COMPARE", "SAME", UVM_LOW)
-            // end
+                `uvm_error("COMPARE_ERROR", $sformatf("Ref value %h != %h DUT value",  value_REF, value_DUT));
+            end
         end
-        // phase.drop_objection(this);
-
     endtask : run_phase
 
 endclass

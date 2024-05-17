@@ -29,7 +29,8 @@ class driver extends uvm_driver #(sequence_item);
     endfunction
 
     function void build_phase(uvm_phase phase);
-        super.build_phase (phase);
+        // super.build_phase (phase);
+        `uvm_info("DRIVER","BUILD PHASE", UVM_LOW);
         if (!uvm_config_db #(virtual dut_interface)::get(this, "", "dut_interface" , dut_if))
 			`uvm_fatal("TEST", "Could not get vitual interface")
         drv_to_encifft_port = new("drv_to_encifft_port",this);
@@ -84,10 +85,7 @@ class driver extends uvm_driver #(sequence_item);
                 // $display("Sending to DUT real: %h - imag: %h", DinR, DinI);
                 FirstData = 0;
             end
-            // Pushin = 0;
             stop_pushin(0);
-            // send_to_REF(transactions_array); // send to REF
-            // #1210;
             check_output.get(check_value);
             wait_for_output(check_value);
             seq_item_port.item_done();
@@ -102,8 +100,13 @@ class driver extends uvm_driver #(sequence_item);
     endtask : stop_pushin
 
     virtual task wait_for_output(reg check_value);
-        if (check_value != 1'b1) begin
-            #10000;
+        // if (!check_value != 1'b1) begin
+        //     #10000;
+        // end
+        forever begin
+            if(check_value)begin
+                break;
+            end
         end
     endtask : wait_for_output
 

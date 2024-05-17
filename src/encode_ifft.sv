@@ -12,7 +12,6 @@ class encode_ifft extends uvm_scoreboard;
     sequence_item transactions;
     complex_t ifft_value[127:0];
     complex_t packet_to_driver[127];
-    // complex_t#(fixed_point) converted_ifft_value[127:0];
 
     function new(string name="encode_ifft",uvm_component parent=null); //create constructor
         super.new(name,parent);
@@ -26,11 +25,9 @@ class encode_ifft extends uvm_scoreboard;
     
     task run_phase(uvm_phase phase);
         forever begin
-            // complex_t #(fixed_point) fixed_packet;
             encifft_analysis_fifo.get(transactions);
             // $display("%h", transactions);
             encode(transactions.rand_48_bits);
-            // mjifft(ifft_value);
             ifft_fft(ifft_value, 1'b0);
             for (int i = 0; i < 128; i++) begin
                 enc_ifft_port.write(ifft_value[i]);

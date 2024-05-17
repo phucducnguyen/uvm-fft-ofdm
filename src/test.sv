@@ -29,9 +29,9 @@ class test extends uvm_test;
         comp_sb = compare_sb::type_id::create("COMPARE",this);
     endfunction : build_phase
 
-    // function void end_of_elaboration_phase(uvm_phase phase);
-    //     uvm_top.print_topology();
-    // endfunction : end_of_elaboration_phase
+    function void end_of_elaboration_phase(uvm_phase phase);
+        uvm_top.print_topology();
+    endfunction : end_of_elaboration_phase
 
     function void connect_phase(uvm_phase phase);
         drv.seq_item_port.connect(seqr.seq_item_export); // driver to squencer
